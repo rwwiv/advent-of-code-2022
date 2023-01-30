@@ -9,7 +9,13 @@ import (
 	"strconv"
 )
 
+const topN int = 3
+
 func main() {
+	/*
+		Part 1
+	*/
+
 	// Open file
 	f, err := os.Open("./input")
 	if err != nil {
@@ -48,5 +54,16 @@ func main() {
 		return elfCalories[i] > elfCalories[j]
 	})
 
-	fmt.Println(elfCalories[0])
+	fmt.Printf("Part 1 answer: %d\n", elfCalories[0])
+
+	/*
+		Part 2
+	*/
+
+	var topNCalories int64 = 0
+	for i := 0; i < topN; i++ {
+		topNCalories += elfCalories[i]
+	}
+
+	fmt.Printf("Part 2 answer: %d\n", topNCalories)
 }
