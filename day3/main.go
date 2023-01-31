@@ -54,18 +54,14 @@ func calcScore(s string) (int, error) {
 	charCode := int(r)
 	if charCode >= 65 && charCode <= 90 {
 		return charCode - 38, nil
-	} else if charCode >= 97 && charCode <= 122 {
-		return charCode - 96, nil
-	} else {
-		return -1, errors.New("invalid rune")
 	}
+	if charCode >= 97 && charCode <= 122 {
+		return charCode - 96, nil
+	}
+	return -1, errors.New("invalid rune")
 }
 
 func main() {
-	/*
-		Part 1
-	*/
-
 	// Accept file name as arg
 	filename := flag.String("f", "./input", "Relative or absolute path to input file")
 	flag.Parse()
@@ -120,6 +116,8 @@ func main() {
 
 		counter++
 	}
+
+	/* Part 1 */
 	fmt.Printf("Total item priorities: %d\n", itemPriTotal)
 
 	/* Part 2 */
