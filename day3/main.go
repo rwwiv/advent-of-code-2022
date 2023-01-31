@@ -10,7 +10,7 @@ import (
 	"strings"
 )
 
-func firstSimilar(s1 []string, s2 []string) (string, error) {
+func firstSimilarPt1(s1 []string, s2 []string) (string, error) {
 	ms1 := make(map[string]bool, len(s1))
 	for _, ks1 := range s1 {
 		ms1[ks1] = true
@@ -21,6 +21,32 @@ func firstSimilar(s1 []string, s2 []string) (string, error) {
 		}
 	}
 	return "", errors.New("no similar runes")
+}
+
+func firstSimilarPt2(s1 []string, s2 []string, s3 []string) (string, error) {
+	maxLen := len(s1)
+	if len(s2) > maxLen {
+		maxLen = len(s2)
+	}
+	if len(s3) > maxLen {
+		maxLen = len(s3)
+	}
+
+	m := make(map[string]int, maxLen)
+	for _, ks1 := range s1 {
+		m[ks1] = 1
+	}
+	for _, ks2 := range s2 {
+		if m[ks2] == 1 {
+			m[ks2]++
+		}
+	}
+	for _, ks3 := range s3 {
+		if m[ks3] == 2 {
+			return ks3, nil
+		}
+	}
+	return "", errors.New("no common rune")
 }
 
 func calcScore(s string) (int, error) {
@@ -55,7 +81,8 @@ func main() {
 	fs := bufio.NewScanner(f)
 	fs.Split(bufio.ScanLines)
 
-	totalPriorities := 0
+	itemPriTotal, badgePriTotal := 0, 0
+	group := [][]string{}
 
 	counter := 1
 	for fs.Scan() {
@@ -64,16 +91,37 @@ func main() {
 		half := len(sack) / 2
 		c1 := sack[:half]
 		c2 := sack[half:]
-		fsm, err := firstSimilar(c1, c2)
+
+		/* Part 1 */
+		fsi, err := firstSimilarPt1(c1, c2)
 		if err != nil {
-			log.Fatal("Failed to find match between compartments")
+			log.Fatal("failed to find match between compartments")
 		}
-		score, err := calcScore(fsm)
+		score, err := calcScore(fsi)
 		if err != nil {
-			log.Fatalf("Could not parse rune from %s", fsm)
+			log.Fatalf("could not parse rune from %s", fsi)
 		}
-		totalPriorities += score
+		itemPriTotal += score
+
+		/* Part 2 */
+		group = append(group, sack)
+		if len(group) == 3 {
+			fsb, err := firstSimilarPt2(group[0], group[1], group[2])
+			if err != nil {
+				log.Fatal("failed to find group badge")
+			}
+			score, err = calcScore(fsb)
+			if err != nil {
+				log.Fatalf("could not parse rune from %s", fsi)
+			}
+			badgePriTotal += score
+			group = group[:0]
+		}
+
 		counter++
 	}
-	fmt.Printf("Total priorities: %d\n", totalPriorities)
+	fmt.Printf("Total item priorities: %d\n", itemPriTotal)
+
+	/* Part 2 */
+	fmt.Printf("Total badge priorities: %d\n", badgePriTotal)
 }
