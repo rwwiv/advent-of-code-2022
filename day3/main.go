@@ -112,7 +112,7 @@ func main() {
 			}
 			score, err = calcScore(fsb)
 			if err != nil {
-				log.Fatalf("could not parse rune from %s", fsi)
+				log.Fatalf("could not parse rune from %s", fsb)
 			}
 			badgePriTotal += score
 			group = group[:0]
