@@ -75,7 +75,7 @@ func main() {
 	*/
 
 	// Accept file name as arg
-	filename := flag.String("f", "./input", "Relative or absolute path to input file")
+	filename := flag.String("f", "./input.txt", "Relative or absolute path to input file")
 	flag.Parse()
 
 	// Open file

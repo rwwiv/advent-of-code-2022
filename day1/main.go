@@ -17,7 +17,7 @@ func main() {
 	*/
 
 	// Open file
-	f, err := os.Open("./input")
+	f, err := os.Open("./input.txt")
 	if err != nil {
 		log.Fatalf("unable to read input: %v", err)
 	}
