@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -28,18 +29,21 @@ var (
 		"Y": PAPER,
 		"Z": SCISSORS,
 	}
-)
-
-func roundScore(sa action, oa action) int {
-	var wins = map[action]action{
+	wins = map[action]action{
 		ROCK:     SCISSORS,
 		PAPER:    ROCK,
 		SCISSORS: PAPER,
 	}
+	loses = map[action]action{
+		ROCK:     PAPER,
+		PAPER:    SCISSORS,
+		SCISSORS: ROCK,
+	}
+)
 
+func roundScorePt1(oa action, sa action) int {
 	score := int(sa)
-	defeat := wins[action(sa)]
-	if action(oa) == defeat {
+	if action(oa) == wins[action(sa)] {
 		score += 6
 	} else if sa == oa {
 		score += 3
@@ -49,13 +53,33 @@ func roundScore(sa action, oa action) int {
 	return score
 }
 
+func roundSCorePt2(oa action, res string) int {
+	score := 0
+	switch res {
+	case "X":
+		score += 0
+		score += int(wins[oa])
+	case "Y":
+		score += 3
+		score += int(oa)
+	case "Z":
+		score += 6
+		score += int(loses[oa])
+	}
+	return score
+}
+
 func main() {
 	/*
 		Part 1
 	*/
 
+	// Accept file name as arg
+	filename := flag.String("f", "./input", "Relative or absolute path to input file")
+	flag.Parse()
+
 	// Open file
-	f, err := os.Open("./input")
+	f, err := os.Open(*filename)
 	if err != nil {
 		log.Fatalf("unable to read input: %v", err)
 	}
@@ -65,7 +89,7 @@ func main() {
 	fs := bufio.NewScanner(f)
 	fs.Split(bufio.ScanLines)
 
-	totalScore := 0
+	pt1TotalScore, pt2TotalScore := 0, 0
 
 	counter := 1
 	for fs.Scan() {
@@ -79,8 +103,16 @@ func main() {
 		if !ok {
 			log.Fatal("Opponent action not in map")
 		}
-		totalScore += roundScore(sa, oa)
+		pt1TotalScore += roundScorePt1(oa, sa)
+		pt2TotalScore += roundSCorePt2(oa, round[1])
 		counter++
 	}
-	fmt.Printf("Total score: %d\n", totalScore)
+	fmt.Printf("Pt 1 total score: %d\n", pt1TotalScore)
+
+	/*
+		Part 2
+	*/
+
+	fmt.Printf("Pt 2 total score: %d\n", pt2TotalScore)
+
 }
