@@ -76,10 +76,13 @@ func main() {
 			mM = true
 		}
 
+		fmt.Println("Looping yay!")
 	}
 	/* Part 1 */
 	fmt.Println(pCounter)
 
 	/* Part 2 */
 	fmt.Println(mCounter)
+
+	fmt.Println("Done!")
 }
