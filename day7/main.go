@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"sort"
 	"strconv"
 	"strings"
 )
@@ -106,9 +107,13 @@ func (d *dir) bigD() int64 {
 	return sum
 }
 
-func (d *dir) smallestBigD(freeSpace int64) int64 {
-	var sum int64 = 0
-	return sum
+func (d *dir) allSizes() []int64 {
+	size := []int64{}
+	for _, dir := range d.dirs {
+		size = append(size, dir.allSizes()...)
+	}
+	size = append(size, d.size)
+	return size
 }
 
 func main() {
@@ -155,9 +160,21 @@ func main() {
 	if err != nil {
 		log.Fatalln("could not change dir")
 	}
-	freeSpace := 70_000_000 - root.calcSize()
-	fmt.Println(freeSpace)
+	root.calcSize()
 
+	// Part 1
 	sum := root.bigD()
-	fmt.Println(sum)
+	fmt.Printf("Part 1: %d\n", sum)
+
+	// Part 2
+	sizes := root.allSizes()
+	sort.Slice(sizes, func(i, j int) bool { return sizes[i] < sizes[j] })
+
+	freeSpace := 70_000_000 - root.size
+	for _, size := range sizes {
+		if freeSpace+size >= 30_000_000 {
+			fmt.Printf("Part 2: %d\n", size)
+			break
+		}
+	}
 }
