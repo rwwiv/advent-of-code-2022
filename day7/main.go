@@ -79,7 +79,6 @@ func (d *dir) ls(r *bufio.Reader) {
 		if err != nil {
 			return
 		}
-		fmt.Printf("> %s\n", line)
 		strLine := string(line)
 		contents := strings.Split(strLine, " ")
 		if contents[0] == "dir" {
@@ -145,14 +144,12 @@ func main() {
 		command := input[1]
 		switch command {
 		case "ls":
-			fmt.Println("ls")
 			pwd.ls(r)
 		case "cd":
 			pwd, err = pwd.cd(input[2])
 			if err != nil {
 				log.Fatalln("could not change dir")
 			}
-			fmt.Printf("cd %s\n", input[2])
 		}
 	}
 
